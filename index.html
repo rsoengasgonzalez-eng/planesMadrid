@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#201a45" />
+  <meta name="description" content="Descubre y comparte planes gratis y de pago en Madrid y hasta 80 km alrededor." />
+  <meta property="og:title" content="¿Qué plan hacemos? · Madrid +80 km" />
+  <meta property="og:description" content="Mapa colaborativo de planes para organizar la próxima quedada." />
+  <meta property="og:image" content="./assets/og-image.png" />
+  <meta property="og:type" content="website" />
+  <title>¿Qué plan hacemos? · Madrid +80 km</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#results">Saltar a los planes</a>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Inicio">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span><strong>¿Qué plan hacemos?</strong><small>Madrid +80 km</small></span>
+    </a>
+    <div class="header-actions">
+      <button class="icon-button" id="favoritesToggle" type="button" aria-pressed="false" title="Mostrar favoritos">
+        <span aria-hidden="true">♡</span><span class="desktop-label">Favoritos</span>
+      </button>
+      <button class="button button-ghost" id="shareAppBtn" type="button"><span aria-hidden="true">↗</span><span class="desktop-label">Compartir</span></button>
+      <button class="button button-primary" id="addPlanBtn" type="button"><span aria-hidden="true">＋</span><span>Añadir plan</span></button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="sidebar" aria-label="Explorar planes">
+      <div class="intro">
+        <div class="eyebrow">ENCUENTRA LA PRÓXIMA QUEDADA</div>
+        <h1>Planes cerca. <em>Decidir, fácil.</em></h1>
+        <p>Filtra, guarda y manda al grupo la propuesta perfecta.</p>
+      </div>
+
+      <div class="filters" aria-label="Filtros">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Buscar</span>
+          <input id="searchInput" type="search" placeholder="Buscar por plan o lugar…" autocomplete="off" />
+          <kbd>⌘ K</kbd>
+        </label>
+
+        <div class="filter-row" role="group" aria-label="Precio">
+          <button class="chip is-active" data-price="all" type="button">Todos</button>
+          <button class="chip" data-price="free" type="button"><span class="dot dot-mint"></span> Gratis</button>
+          <button class="chip" data-price="paid" type="button"><span class="dot dot-coral"></span> De pago</button>
+        </div>
+
+        <div class="filter-control">
+          <div class="filter-label"><span>Distancia desde Madrid</span><strong id="distanceValue">80 km</strong></div>
+          <input id="distanceRange" type="range" min="5" max="80" value="80" step="5" aria-label="Distancia máxima" />
+          <div class="range-hints"><span>5 km</span><span>80 km</span></div>
+        </div>
+
+        <div class="category-wrap">
+          <div class="filter-label"><span>Categoría</span><button id="clearFilters" class="text-button" type="button">Limpiar</button></div>
+          <div id="categoryFilters" class="category-filters"></div>
+        </div>
+      </div>
+
+      <div class="results-head" id="results">
+        <div><strong id="resultCount">0 planes</strong><span id="activeSummary">hasta 80 km</span></div>
+        <label class="sort-label">Ordenar
+          <select id="sortSelect">
+            <option value="recommended">Recomendados</option>
+            <option value="distance">Más cercanos</option>
+            <option value="price">Gratis primero</option>
+            <option value="name">Nombre A–Z</option>
+          </select>
+        </label>
+      </div>
+      <div id="planList" class="plan-list" aria-live="polite"></div>
+      <div id="emptyState" class="empty-state" hidden>
+        <span aria-hidden="true">◌</span>
+        <h2>No encontramos ese plan</h2>
+        <p>Prueba a ampliar la distancia o quitar algún filtro.</p>
+        <button class="button button-primary" id="emptyReset" type="button">Ver todos</button>
+      </div>
+    </section>
+
+    <section class="map-panel" aria-label="Mapa de planes">
+      <div id="map" role="application" aria-label="Mapa interactivo de Madrid y alrededores"></div>
+      <div class="map-tools">
+        <button id="locateBtn" class="map-button" type="button" title="Usar mi ubicación"><span aria-hidden="true">◎</span><span>Mi ubicación</span></button>
+        <button id="fitBtn" class="map-button compact" type="button" title="Ver todos los planes" aria-label="Ver todos los planes">⌗</button>
+      </div>
+      <button id="mapModeBadge" class="map-mode-badge" type="button" title="Información sobre el mapa"><span aria-hidden="true">◆</span><span id="mapModeText">Mapa local</span></button>
+      <div class="legend" aria-label="Leyenda"><span><i class="legend-pin free"></i>Gratis</span><span><i class="legend-pin paid"></i>De pago</span></div>
+      <button id="mobileListToggle" class="mobile-list-toggle" type="button"><span aria-hidden="true">≡</span> Ver lista <b id="mobileCount">0</b></button>
+    </section>
+  </main>
+
+  <dialog id="detailDialog" class="dialog detail-dialog">
+    <button class="dialog-close" data-close-dialog type="button" aria-label="Cerrar">×</button>
+    <div id="detailContent"></div>
+  </dialog>
+
+  <dialog id="addDialog" class="dialog form-dialog">
+    <button class="dialog-close" data-close-dialog type="button" aria-label="Cerrar">×</button>
+    <form id="addPlanForm" method="dialog">
+      <div class="eyebrow">NUEVA PROPUESTA</div>
+      <h2>Añade un plan al mapa</h2>
+      <p class="form-intro">Se guardará en este dispositivo. Al compartirlo por WhatsApp se enviarán todos los detalles.</p>
+      <div class="form-grid">
+        <label class="field full"><span>Nombre del plan *</span><input name="title" required maxlength="70" placeholder="Ej. Picnic al atardecer" /></label>
+        <label class="field"><span>Categoría *</span><select name="category" required></select></label>
+        <label class="field"><span>Tipo</span><select name="priceType"><option value="free">Gratis</option><option value="paid">De pago</option></select></label>
+        <label class="field"><span>Localidad *</span><input name="town" required maxlength="50" placeholder="Ej. Cercedilla" /></label>
+        <label class="field"><span>Precio orientativo</span><input name="priceLabel" maxlength="30" placeholder="Ej. 12 € / persona" /></label>
+        <label class="field"><span>Fecha (opcional)</span><input name="date" type="datetime-local" /></label>
+        <label class="field"><span>Duración</span><input name="duration" maxlength="25" placeholder="Ej. 3 h" /></label>
+        <label class="field full"><span>Descripción *</span><textarea name="description" required maxlength="300" rows="3" placeholder="Cuenta al grupo en qué consiste…"></textarea></label>
+        <label class="field full"><span>Enlace con más información</span><input name="url" type="url" placeholder="https://…" /></label>
+        <input name="lat" type="hidden" /><input name="lng" type="hidden" />
+        <div class="location-picker full">
+          <div><strong>Ubicación *</strong><span id="pickedLocation">Aún no seleccionada</span></div>
+          <button id="pickLocationBtn" class="button button-secondary" type="button">Elegir en el mapa</button>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="button button-ghost" data-close-dialog type="button">Cancelar</button>
+        <button class="button button-primary" type="submit">Guardar plan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="aboutDialog" class="dialog about-dialog">
+    <button class="dialog-close" data-close-dialog type="button" aria-label="Cerrar">×</button>
+    <div class="eyebrow">SOBRE EL MAPA</div>
+    <h2>Una brújula para el grupo</h2>
+    <p>Los planes incluidos son ideas orientativas y permanentes. Comprueba disponibilidad, horarios, accesos y precio en el enlace oficial antes de salir.</p>
+    <ul>
+      <li>El radio se calcula en línea recta desde el centro de Madrid.</li>
+      <li>Tus favoritos y propuestas se guardan solo en este navegador.</li>
+      <li>Al abrir <code>index.html</code> directamente se usa un mapa vectorial local, sin peticiones externas.</li>
+      <li>Al ejecutarla con <code>iniciar-app.bat</code> o publicarla como web se activa el mapa detallado con atribución visible.</li>
+    </ul>
+    <button class="button button-primary" data-close-dialog type="button">Entendido</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="mobile-footer-note"><button id="aboutBtn" type="button">Información y fuentes</button></footer>
+
+  <script src="./config.js"></script>
+  <script src="./mini-map.js"></script>
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

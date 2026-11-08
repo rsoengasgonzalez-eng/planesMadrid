@@ -1,0 +1,18 @@
+QUÉ PLAN HACEMOS — INICIO RÁPIDO EN WINDOWS
+================================================
+
+OPCIÓN RECOMENDADA (mapa detallado)
+1. Descomprime todo el ZIP.
+2. Haz doble clic en iniciar-app.bat.
+3. Se abrirá el navegador en http://127.0.0.1:8080/.
+4. Mantén la ventana del servidor abierta. Para cerrarlo, pulsa Ctrl+C.
+
+OPCIÓN SIN SERVIDOR
+Puedes abrir index.html directamente. En ese caso la app activa automáticamente
+un mapa vectorial local y NO solicita teselas a OpenStreetMap. Los marcadores,
+filtros, fichas y favoritos siguen funcionando, aunque el fondo es más esquemático.
+
+PARA COMPARTIRLA
+Publica la carpeta completa en Netlify Drop o GitHub Pages. Desde una URL https://
+la app activa el mapa detallado y el botón Compartir puede enviar el enlace.
+Consulta README.md para los pasos completos.
