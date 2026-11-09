@@ -1,124 +1,84 @@
-# ¿Qué plan hacemos? · Madrid +80 km
+# Mejora visual para Planes Madrid
 
-Aplicación web estática y responsive para descubrir y compartir planes en Madrid y hasta 80 km alrededor.
+Este paquete corrige lo que se ve en la captura sin sustituir ni duplicar los 189 planes. Incluye `vista-previa-orientativa.png` para mostrar el estilo esperado; el resultado exacto dependerá de las clases actuales de la aplicación.
 
-## Inicio rápido en Windows
+## Qué corrige
 
-1. Descomprime **toda** la carpeta.
-2. Haz doble clic en **`iniciar-app.bat`**.
-3. Se abrirá `http://127.0.0.1:8080/` en el navegador.
-4. Mantén la ventana del servidor abierta. Para terminar, pulsa `Ctrl+C`.
+1. **Codificación UTF-8:** repara iconos mostrados como `ðŸ...`, letras como `Ã...` y otros caracteres mal interpretados.
+2. **Iconos vectoriales:** sustituye los emojis rotos de las tarjetas por SVG nítidos y coherentes para Naturaleza, Cultura, Gastronomía, Ocio, Rutas y Aventura.
+3. **Marcadores del mapa:** reemplaza el glifo corrupto por un marcador limpio, manteniendo el color que ya diferencia los planes.
+4. **Textos de interfaz:** mejora el titular, la introducción, el buscador y varias etiquetas sin cambiar los datos de los planes.
+5. **Acabado visual:** mejora tarjetas, buscador, botones, estados hover/focus, contraste y comportamiento móvil.
+6. **Compatibilidad:** conserva `window.PLANES_MADRID`, los filtros, favoritos, enlaces, precios y coordenadas.
 
-No hace falta instalar Node.js ni compilar. El lanzador usa PowerShell, incluido normalmente en Windows 10 y 11.
+## Instalación
 
-### Si abres `index.html` directamente
+### 1. Copia los archivos
 
-También funciona. La aplicación detecta `file://` y activa automáticamente un **mapa vectorial local incluido en el ZIP**. No solicita teselas externas, de modo que no aparecen errores 403. Los marcadores, filtros, favoritos, fichas y propuestas propias siguen funcionando.
+Copia estos dos archivos a la misma carpeta en la que está `index.html`:
 
-El fondo local es deliberadamente esquemático. Para ver cartografía detallada, usa `iniciar-app.bat` o publica la carpeta como web.
+- `planes-beautify.css`
+- `planes-beautify.js`
 
-## Por qué se corrigió el mapa
+### 2. Corrige la cabecera de `index.html`
 
-Los servidores comunitarios de teselas de OpenStreetMap requieren que las páginas web envíen un encabezado HTTP `Referer` válido. Una página abierta con `file://` normalmente no puede hacerlo y puede ser bloqueada.
+La **primera etiqueta dentro de `<head>`** debe ser:
 
-Esta versión aplica tres medidas:
-
-- **Nunca pide teselas externas desde `file://`.**
-- Incluye un **mapa vectorial local de respaldo**, útil incluso sin conexión.
-- Solo activa la cartografía raster cuando la app se sirve desde `http://` o `https://`, con atribución visible, URL configurable y la caché HTTP normal del navegador.
-
-No se incluyen teselas de OpenStreetMap en el ZIP ni se descargan áreas para uso offline.
-
-## Publicarla y compartirla por WhatsApp
-
-### Netlify Drop — opción rápida
-
-1. Entra en [Netlify Drop](https://app.netlify.com/drop).
-2. Arrastra la carpeta `planes-madrid` completa, no el ZIP.
-3. Netlify generará una URL pública HTTPS.
-4. Abre esa URL y usa **Compartir** o el botón **WhatsApp** de cualquier ficha.
-
-### GitHub Pages
-
-1. Sube el contenido de esta carpeta a un repositorio.
-2. Ve a **Settings → Pages**.
-3. En **Build and deployment**, selecciona **Deploy from a branch**.
-4. Elige la rama principal y `/ (root)`.
-5. Guarda y usa la URL publicada.
-
-## Ejecutarla en macOS o Linux
-
-```bash
-chmod +x iniciar-app.sh
-./iniciar-app.sh
+```html
+<meta charset="UTF-8">
 ```
 
-También puedes utilizar cualquier servidor web estático:
+Es importante que aparezca antes del título, las hojas de estilo y cualquier script. Esta es la corrección principal del texto `ðŸ...` que se ve en la captura.
 
-```bash
-python3 -m http.server 8080 --bind 127.0.0.1
+Después de la hoja de estilos actual, añade:
+
+```html
+<link rel="stylesheet" href="./planes-beautify.css">
 ```
 
-Después abre `http://127.0.0.1:8080/`.
+### 3. Carga el JavaScript
 
-## Configuración del proveedor cartográfico
+El orden ideal al final de `<body>` es:
 
-Edita `config.js`:
-
-```js
-window.PLANES_MAP_CONFIG = {
-  mode: 'auto',
-  tileUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  attribution: '© OpenStreetMap contributors',
-  maxZoom: 18
-};
+```html
+<script src="./planes.js"></script>
+<script src="./planes-beautify.js"></script>
+<script src="./app.js"></script>
 ```
 
-Modos disponibles:
+Si el archivo principal no se llama `app.js`, conserva su nombre real. Lo esencial es cargar `planes-beautify.js` **después del catálogo de planes**. Si no puedes cambiar el orden actual, añádelo como último script; el observador incluido corregirá también contenido renderizado después.
 
-- `auto`: mapa local con `file://`; proveedor raster con `http://` o `https://`.
-- `local`: mapa vectorial incluido en todos los casos, sin peticiones cartográficas externas.
-- `raster`: proveedor configurado al servir la página por HTTP(S); por seguridad sigue usando el mapa local con `file://`.
+El archivo `index-head-snippet.html` contiene un bloque listo para copiar.
 
-Para un proyecto con tráfico considerable o requisitos de disponibilidad, sustituye `tileUrl` y `attribution` por los de un proveedor comercial o por infraestructura propia, respetando sus condiciones y claves API.
+## Codificación de los archivos en GitHub
 
-## Funciones incluidas
+Guarda `index.html`, el catálogo de planes y los archivos JavaScript como **UTF-8**. No uses ANSI, ISO-8859-1 ni Windows-1252.
 
-- 21 propuestas iniciales dentro de 80 km.
-- Búsqueda y filtros por distancia, precio y categoría.
-- Favoritos guardados en el navegador.
-- Fichas con presupuesto, duración, información y ubicación.
-- Propuestas propias seleccionando un punto del mapa.
-- Mensajes preparados para WhatsApp.
-- Diseño móvil y PWA instalable.
-- Mapa local funcional sin conexión y mapa detallado al servirse como web.
+En VS Code:
 
-## Personalizar los planes
+1. Abre el archivo.
+2. Pulsa el indicador de codificación en la esquina inferior derecha.
+3. Selecciona **Save with Encoding**.
+4. Elige **UTF-8**.
 
-Edita `data.js`. Ejemplo:
+## Comprobación rápida tras publicar
 
-```js
-{
-  id: 'identificador-unico',
-  title: 'Nombre del plan',
-  category: 'nature', // nature, culture, food, adventure, leisure o route
-  priceType: 'free',  // free o paid
-  priceLabel: 'Gratis',
-  town: 'Localidad',
-  lat: 40.4168,
-  lng: -3.7038,
-  duration: '2–3 h',
-  description: 'Descripción breve',
-  notes: 'Recomendaciones para el grupo',
-  url: 'https://sitio-oficial.example',
-  icon: '🌿',
-  featured: 8
-}
+1. Haz una recarga completa: `Ctrl+F5` o `Cmd+Shift+R`.
+2. Comprueba que ya no aparece texto que empiece por `ðŸ`, `Ã`, `Â` o el símbolo `�`.
+3. Verifica al menos una tarjeta de cada categoría.
+4. Prueba filtros, buscador, favoritos y el control de distancia.
+5. Revisa los marcadores gratis y de pago en el mapa.
+6. Comprueba la vista móvil.
+
+## Si todavía se ve la versión anterior
+
+GitHub Pages y el navegador pueden conservar archivos en caché. Prueba una ventana privada o añade temporalmente una versión a los recursos:
+
+```html
+<link rel="stylesheet" href="./planes-beautify.css?v=2">
+<script src="./planes-beautify.js?v=2"></script>
 ```
 
-## Privacidad y alcance
+## Nota técnica
 
-- El radio se calcula en línea recta desde el centro de Madrid.
-- Favoritos y propuestas propias se guardan en `localStorage` y no se sincronizan.
-- La geolocalización solo se solicita al pulsar **Mi ubicación**.
-- Antes de salir, confirma horarios, precios, reservas, accesos y meteorología en los enlaces oficiales.
+La solución usa SVG propios, no una librería externa. Así evita dependencias, no añade peticiones de red y los iconos conservan nitidez en pantallas de alta resolución. El reparador de texto actúa como red de seguridad; aun así, debe mantenerse `<meta charset="UTF-8">` porque corrige el problema desde el origen.

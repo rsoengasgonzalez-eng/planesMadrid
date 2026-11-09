@@ -1,0 +1,235 @@
+/* Planes Madrid — visual refinement layer */
+:root {
+  --pm-ink: #181634;
+  --pm-muted: #6f6b7d;
+  --pm-paper: #fffdf9;
+  --pm-panel: #fbf8f2;
+  --pm-line: #e9e4db;
+  --pm-purple: #4736c6;
+  --pm-purple-dark: #251c67;
+  --pm-coral: #ef694d;
+  --pm-mint: #49c79d;
+  --pm-shadow-sm: 0 1px 2px rgba(25, 20, 54, .05), 0 8px 22px rgba(25, 20, 54, .06);
+  --pm-shadow-md: 0 16px 40px rgba(25, 20, 54, .12);
+  --pm-radius-sm: 12px;
+  --pm-radius-md: 18px;
+  --pm-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+html.pm-beautified {
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+html.pm-beautified body {
+  color: var(--pm-ink);
+  background: var(--pm-paper);
+}
+
+/* Stronger hierarchy without changing the app structure. */
+html.pm-beautified h1,
+html.pm-beautified h2,
+html.pm-beautified h3 {
+  color: var(--pm-ink);
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+html.pm-beautified p {
+  text-wrap: pretty;
+}
+
+/* Header actions */
+html.pm-beautified .pm-primary-action {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--pm-purple-dark), var(--pm-purple)) !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 18px rgba(71, 54, 198, .24) !important;
+  transition: transform .18s var(--pm-ease), box-shadow .18s var(--pm-ease), filter .18s var(--pm-ease) !important;
+}
+
+html.pm-beautified .pm-primary-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(71, 54, 198, .32) !important;
+  filter: saturate(1.08);
+}
+
+html.pm-beautified .pm-soft-action {
+  background: rgba(255, 255, 255, .78) !important;
+  border-color: var(--pm-line) !important;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease !important;
+}
+
+html.pm-beautified .pm-soft-action:hover {
+  background: #fff !important;
+  border-color: #cbc3f4 !important;
+  transform: translateY(-1px);
+}
+
+/* Search field */
+html.pm-beautified .pm-search-input {
+  min-height: 48px;
+  color: var(--pm-ink) !important;
+  background: #fff !important;
+  border-color: var(--pm-line) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--pm-shadow-sm) !important;
+  transition: border-color .18s ease, box-shadow .18s ease !important;
+}
+
+html.pm-beautified .pm-search-input:focus {
+  outline: none !important;
+  border-color: #8d80e8 !important;
+  box-shadow: 0 0 0 4px rgba(71, 54, 198, .11), var(--pm-shadow-sm) !important;
+}
+
+html.pm-beautified .pm-search-input::placeholder {
+  color: #928d9d;
+  opacity: 1;
+}
+
+/* Plan cards detected from the title/data relationship. */
+html.pm-beautified [data-pm-plan-card] {
+  position: relative;
+  overflow: hidden;
+  border-color: var(--pm-line) !important;
+  border-radius: var(--pm-radius-md) !important;
+  background: rgba(255, 255, 255, .96) !important;
+  box-shadow: var(--pm-shadow-sm) !important;
+  transition: transform .22s var(--pm-ease), box-shadow .22s var(--pm-ease), border-color .22s ease !important;
+}
+
+html.pm-beautified [data-pm-plan-card]::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 3px 0 0 var(--pm-category, #8b7be8);
+  opacity: .9;
+}
+
+html.pm-beautified [data-pm-plan-card]:hover {
+  z-index: 1;
+  transform: translateY(-3px);
+  border-color: #d9d1f7 !important;
+  box-shadow: var(--pm-shadow-md) !important;
+}
+
+html.pm-beautified [data-pm-category='nature'] { --pm-category: #36a879; --pm-icon-bg: #dff6eb; --pm-icon-fg: #147957; }
+html.pm-beautified [data-pm-category='culture'] { --pm-category: #7664da; --pm-icon-bg: #ebe7ff; --pm-icon-fg: #5140b5; }
+html.pm-beautified [data-pm-category='food'] { --pm-category: #e98849; --pm-icon-bg: #fff0df; --pm-icon-fg: #b85f28; }
+html.pm-beautified [data-pm-category='leisure'] { --pm-category: #df5f82; --pm-icon-bg: #ffe5ed; --pm-icon-fg: #ad365a; }
+html.pm-beautified [data-pm-category='route'] { --pm-category: #3e9cb2; --pm-icon-bg: #def3f7; --pm-icon-fg: #26768a; }
+html.pm-beautified [data-pm-category='adventure'] { --pm-category: #d15e43; --pm-icon-bg: #ffebe3; --pm-icon-fg: #a33c28; }
+
+/* Replaces broken emoji artwork with crisp, scalable line icons. */
+html.pm-beautified .pm-beautified-icon {
+  display: grid !important;
+  place-items: center !important;
+  color: var(--pm-icon-fg, var(--pm-purple)) !important;
+  background:
+    radial-gradient(circle at 75% 20%, rgba(255,255,255,.92) 0 12%, transparent 13%),
+    linear-gradient(145deg, rgba(255,255,255,.35), transparent 55%),
+    var(--pm-icon-bg, #ebe7ff) !important;
+  border: 1px solid rgba(255, 255, 255, .82) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 0 0 1px rgba(24, 22, 52, .04), 0 8px 18px rgba(24, 22, 52, .08) !important;
+}
+
+html.pm-beautified .pm-svg-icon {
+  display: block;
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+}
+
+html.pm-beautified .pm-card-svg {
+  width: clamp(27px, 3.2vw, 35px);
+  height: clamp(27px, 3.2vw, 35px);
+  color: var(--pm-icon-fg, var(--pm-purple));
+  filter: drop-shadow(0 2px 1px rgba(255,255,255,.7));
+}
+
+html.pm-beautified .pm-card-svg * {
+  stroke: var(--pm-icon-fg, var(--pm-purple)) !important;
+}
+
+/* Leaflet markers: preserve app position/interaction, replace only corrupted glyph. */
+html.pm-beautified .pm-map-marker {
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+  color: #fff !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  transform-origin: 50% 100%;
+}
+
+html.pm-beautified .pm-marker-surface {
+  display: grid;
+  width: 82%;
+  height: 82%;
+  place-items: center;
+  color: #fff;
+  background: var(--pm-marker-color, var(--pm-mint));
+  border: 3px solid #fff;
+  border-radius: 50% 50% 50% 12%;
+  box-shadow: 0 3px 10px rgba(28, 24, 50, .28), 0 0 0 1px rgba(28, 24, 50, .08);
+  transform: rotate(-45deg);
+}
+
+html.pm-beautified .pm-map-marker:hover {
+  z-index: 1000 !important;
+  filter: brightness(1.03) saturate(1.07);
+}
+
+html.pm-beautified .pm-marker-svg {
+  width: 48% !important;
+  height: 48% !important;
+  color: #fff;
+  transform: rotate(45deg);
+  stroke-width: 2.1;
+}
+
+html.pm-beautified .pm-marker-svg * {
+  stroke: #fff !important;
+}
+
+/* Pills/chips get a lighter, more tactile finish. */
+html.pm-beautified button,
+html.pm-beautified [role='button'] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html.pm-beautified button:focus-visible,
+html.pm-beautified a:focus-visible,
+html.pm-beautified input:focus-visible {
+  outline: 3px solid rgba(71, 54, 198, .24) !important;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.pm-beautified *,
+  html.pm-beautified *::before,
+  html.pm-beautified *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@media (max-width: 760px) {
+  html.pm-beautified .pm-soft-action {
+    box-shadow: none;
+  }
+
+  html.pm-beautified [data-pm-plan-card]:hover {
+    transform: none;
+  }
+}
